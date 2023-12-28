@@ -135,10 +135,10 @@ const ItemInfo = () => {
                          <Typography variant="h6" color="textSecondary" gutterBottom>
                                 Thông tin vận chuyển
                          </Typography>
-                         <Typography variant="body2" color="textSecondary" gutterBottom>
+                         {transfers.length > 0 && <Typography variant="body2" color="textSecondary" gutterBottom>
                                 {new Date(transfers[0].transferDate).toLocaleDateString('en-GB')}:&nbsp;
                                 Đơn hàng vận chuyển từ {transfers[0].fromLocation.includes('A')?'điểm giao dịch':'điểm tập kết'} {transfers[0].fromLocation}&nbsp;
-                        </Typography>
+                        </Typography>}
                          {transfers.length > 0 ? (
                             transfers.map((transfer, index) => (
                             <Grid key={index} item xs={12} md={12}>
