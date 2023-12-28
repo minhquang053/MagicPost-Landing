@@ -13,7 +13,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 const ItemInfo = () => {
-
+    let order, transfers;
+    
     const navigate = useNavigate();
     const location = useLocation();
     
@@ -34,6 +35,8 @@ const ItemInfo = () => {
         'goods': 'Hàng hóa',
       };
     
+    
+
     const fetchData = async (orderId) => {
         if (orderId) {
             const response = await fetch(`https://magic-post-7ed53u57vq-de.a.run.app/v1/tracking/${orderId}`);
@@ -74,7 +77,7 @@ const ItemInfo = () => {
     );
   } 
   else if ((state && state.order && state.transfers) || aData !== '') {
-    let order, transfers;
+    //let order, transfers;
     if (aData !== '') {
         order = aData.order;
         transfers = aData.transfers;
@@ -98,6 +101,8 @@ const ItemInfo = () => {
         order && (
             <Paper elevation={3} sx={{ padding: 4, margin: [4, 4, 4 ,4], boxShadow: 3 }}>
                 <Grid container spacing={3}>
+                    
+
                     <Grid item xs={12} md={12}>
                         <Typography variant="h5" align="center">
                             {order.orderId}
@@ -114,15 +119,45 @@ const ItemInfo = () => {
                             Điểm gửi hàng: {order.startLocation}
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
-                            Điểm giao hàng: {order.endLocation}
+                            Điểm nhận hàng: {order.endLocation}
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
-                            Thời gian tạo đơn: {order.createdDate}
+                            Thời gian tạo đơn: {new Date(order.createdDate).toLocaleDateString('en-GB')}
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
-                            Thời gian hoàn thành: {order.doneDate || ''}
+                            Thời gian hoàn thành : {order.orderStatus === 'done'?new Date(transfers[2].confirmDate).toLocaleDateString('en-GB'):'Chưa có dữ kiện.'}
                         </Typography>
                     </Grid>
+
+                    {/* Display transfer information */}
+                    
+                    <Grid item xs={12} md={12}>
+                         <Typography variant="h6" color="textSecondary" gutterBottom>
+                                Thông tin vận chuyển
+                         </Typography>
+                         <Typography variant="body2" color="textSecondary" gutterBottom>
+                                {new Date(transfers[0].transferDate).toLocaleDateString('en-GB')}:&nbsp;
+                                Đơn hàng vận chuyển từ {transfers[0].fromLocation.includes('A')?'điểm giao dịch':'điểm tập kết'} {transfers[0].fromLocation}&nbsp;
+                        </Typography>
+                         {transfers.length > 0 ? (
+                            transfers.map((transfer, index) => (
+                            <Grid key={index} item xs={12} md={12}>
+                            {transfer.done && <Typography variant="body2" color="textSecondary" gutterBottom>
+                                {new Date(transfer.confirmDate).toLocaleDateString('en-GB')}:&nbsp;
+                                Đơn hàng đến {transfer.toLocation.includes('A')?'điểm giao dịch':'điểm tập kết'} {transfer.toLocation}
+                            </Typography>}
+                            
+                            {/* Add more transfer details if needed */}
+                            </Grid>
+                            ))
+                         ) : (
+                            <Typography variant="body2" color="textSecondary">
+                                Đơn hàng vẫn đang được đóng gói và sẽ sớm
+                                được chuyển đi trong thời gian ngắn nhất.
+                            </Typography>
+                         )}
+                    </Grid>
+
                     <Grid item xs={12} md={12}>
                         <Typography variant="h6" color="textSecondary" gutterBottom>
                             Thông tin người gửi
