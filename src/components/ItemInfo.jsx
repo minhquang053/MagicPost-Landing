@@ -51,9 +51,11 @@ const ItemInfo = () => {
     }
 
     useEffect(() => {
-        const searchParams = new URLSearchParams(location.search);
-        const orderIdFromUrl = searchParams.get('orderId');
-        fetchData(orderIdFromUrl);
+        if (aData === '') {
+            const searchParams = new URLSearchParams(location.search);
+            const orderIdFromUrl = searchParams.get('orderId');
+            fetchData(orderIdFromUrl);
+        }
     }, [location.search]);
 
   //const { order, transfers } = location.state;
